@@ -1,5 +1,11 @@
 # Tennis Club API
 
+## Modal plan
+
+![diagram of classes](tennis_club_diagram.svg)
+
+To edit diagram, load the `tennis_club_diagram.drawio` file in [drawio](https://app.diagrams.net/) then download the svg file into the root of the project.
+
 ## Specification
 
 #### 1) An endpoint for registering a new player into the club
