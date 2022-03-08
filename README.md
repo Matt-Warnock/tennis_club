@@ -96,11 +96,18 @@ rbenv rehash
 bundle install
 ```
 
+## PostgreSQL Setup
+You will need to have PostgresSQL installed locally to run this app.
+[PostgreSQL installation guides](https://www.postgresql.org/download/)
+
+`rake db:local_setup` to create the databases
+
 ### To run the app
 
 
 ## Tests
 
+Before running tests ensure you have run `rake db:local_setup`.
 
 ### To run all tests
 
