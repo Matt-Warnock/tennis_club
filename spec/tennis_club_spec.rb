@@ -8,19 +8,55 @@ RSpec.describe 'tennis_club' do
   end
 
   describe '/v1/players' do
-    before { post '/v1/players' }
+    context 'when successful' do
+      before { post '/v1/players', player.to_json }
 
-    it 'is successful' do
-      expect(last_response).to be_ok
+      it 'sends 200 status' do
+        expect(last_response.status).to eq 200
+      end
+
+      it 'sends correct content type' do
+        expect(last_response.headers['Content-Type']).to eq 'application/json'
+      end
+
+      it 'sends valid_json' do
+        expect(valid_json?(last_response.body)).to be true
+      end
     end
 
-    it 'sends correct content type' do
-      expect(last_response.headers['Content-Type']).to eq 'application/json'
-    end
+    xcontext 'when player already exists' do
+      before do
+        Players.new.create(player)
+        post '/v1/players', player.to_json
+      end
 
-    it 'sends valid_json' do
-      expect(valid_json?(last_response.body)).to be true
+      it 'sends 400 status' do
+        expect(last_response.status).to eq 400
+      end
+
+      it 'sends error message' do
+        error_message = 'Player with same name already exists'
+
+        expect(last_response.body).to include error_message
+      end
+
+      it 'sends correct content type' do
+        expect(last_response.headers['Content-Type']).to eq 'application/json'
+      end
+
+      it 'sends valid_json' do
+        expect(valid_json?(last_response.body)).to be true
+      end
     end
+  end
+
+  def player
+    {
+      first_name: 'john',
+      last_name: 'doe',
+      nationality: 'british',
+      birth_date: '1990-01-01'
+    }
   end
 
   def valid_json?(json)

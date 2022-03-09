@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'sinatra'
+require_relative './lib/players'
 
 class TennisClub < Sinatra::Base
   before do
