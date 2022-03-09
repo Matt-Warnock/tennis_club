@@ -35,6 +35,32 @@ RSpec.describe Players do
         expect(database_player['score']).to eq '1200'
       end
     end
+
+    context 'when data exceeds database constraints' do
+      it 'does not raise an error' do
+        one_hundred_chars_name = {
+          first_name: ('john ' * 20),
+          last_name: 'doe',
+          nationality: 'british',
+          birth_date: '1990-01-01'
+        }
+
+        expect { subject.create(one_hundred_chars_name) }.to_not raise_error
+      end
+
+      it 'logs an error' do
+        bad_date_format = {
+          first_name: 'john ',
+          last_name: 'doe',
+          nationality: 'british',
+          birth_date: 'january 1'
+        }
+
+        expect { subject.create(bad_date_format) }
+          .to change { subject.error_message }
+          .from(nil).to(String)
+      end
+    end
   end
 
   def database_player
