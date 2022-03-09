@@ -18,6 +18,14 @@ class Players
     @error_message = e.message
   end
 
+  def find(first_name, last_name)
+    result = DatabaseConnection.query(
+      'SELECT * FROM players
+       WHERE first_name=$1 AND last_name=$2;', [first_name, last_name]
+    )
+    result.first || {}
+  end
+
   private
 
   def order_in_array(player)

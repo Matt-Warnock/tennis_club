@@ -55,6 +55,34 @@ RSpec.describe Players do
     end
   end
 
+  describe '#find' do
+    it 'returns the player that matches existing players full name' do
+      add_player_to_database
+
+      result = subject.find('john', 'doe')
+
+      expect(result['first_name']).to eq 'john'
+    end
+
+    it 'returns an empty hash if no players match full name' do
+      result = subject.find('john', 'doe')
+
+      expect(result).to eq({})
+    end
+  end
+
+  def add_player_to_database
+    connection.exec(
+      'INSERT INTO players(first_name, last_name, nationality, birth_date)
+       VALUES($1, $2, $3, $4);', [
+         player[:first_name],
+         player[:last_name],
+         player[:nationality],
+         player[:birth_date]
+       ]
+    )
+  end
+
   def database_player
     connection.exec('SELECT * FROM players;').first
   end
