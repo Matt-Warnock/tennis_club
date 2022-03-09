@@ -8,6 +8,8 @@ class Administrator
   def register_player(player)
     return raise 'bad or incomplete data' unless all_data_present?(player)
 
+    return raise 'player already registered' unless @players.find(player[:first_name], player[:last_name]).empty?
+
     @players.create(player)
   end
 

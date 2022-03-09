@@ -7,7 +7,12 @@ RSpec.describe Administrator do
     let(:players) { double('Players') }
     let(:administrator) { described_class.new(players) }
 
-    before { allow(players).to receive(:create) }
+    before do
+      allow(players).to receive(:create)
+      allow(players).to receive(:find)
+        .with(good_data[:first_name], good_data[:last_name])
+        .and_return({})
+    end
 
     context 'when data is good' do
       it 'calls players with data' do
@@ -16,13 +21,10 @@ RSpec.describe Administrator do
         administrator.register_player(good_data)
       end
 
-      def good_data
-        {
-          first_name: 'john',
-          last_name: 'doe',
-          nationality: 'british',
-          birth_date: '1990-01-01'
-        }
+      it 'checks if the player is already registered' do
+        expect(players).to receive(:find).with(good_data[:first_name], good_data[:last_name])
+
+        administrator.register_player(good_data)
       end
     end
 
@@ -34,5 +36,27 @@ RSpec.describe Administrator do
           .to raise_error 'bad or incomplete data'
       end
     end
+
+    context 'when player is already registered' do
+      before do
+        allow(players).to receive(:find)
+          .with(good_data[:first_name], good_data[:last_name])
+          .and_return(good_data)
+      end
+
+      it 'raises error' do
+        expect { administrator.register_player(good_data) }
+          .to raise_error 'player already registered'
+      end
+    end
+  end
+
+  def good_data
+    {
+      first_name: 'john',
+      last_name: 'doe',
+      nationality: 'british',
+      birth_date: '1990-01-01'
+    }
   end
 end
