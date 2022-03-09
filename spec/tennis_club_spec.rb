@@ -22,9 +22,13 @@ RSpec.describe 'tennis_club' do
       it 'sends valid_json' do
         expect(valid_json?(last_response.body)).to be true
       end
+
+      it 'adds player to the database' do
+        expect(database_find(player)).to include(player)
+      end
     end
 
-    xcontext 'when player already exists' do
+    context 'when player already exists' do
       before do
         Players.new.create(player)
         post '/v1/players', player.to_json
@@ -35,7 +39,7 @@ RSpec.describe 'tennis_club' do
       end
 
       it 'sends error message' do
-        error_message = 'Player with same name already exists'
+        error_message = 'player already registered'
 
         expect(last_response.body).to include error_message
       end
@@ -48,6 +52,13 @@ RSpec.describe 'tennis_club' do
         expect(valid_json?(last_response.body)).to be true
       end
     end
+  end
+
+  def database_find(player)
+    Players
+      .new
+      .find(player[:first_name], player[:last_name])
+      .transform_keys(&:to_sym)
   end
 
   def player
