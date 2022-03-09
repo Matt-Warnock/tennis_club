@@ -16,7 +16,7 @@ class TennisClub < Sinatra::Base
     administrator.register_player(data)
     { player: 'added to database' }.to_json
 
-  rescue RuntimeError => e
+  rescue RuntimeError, JSON::ParserError => e
     status 400
     body({ error: e.message }.to_json)
   end

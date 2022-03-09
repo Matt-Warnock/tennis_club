@@ -52,6 +52,22 @@ RSpec.describe 'tennis_club' do
         expect(valid_json?(last_response.body)).to be true
       end
     end
+
+    context 'when invalid json request' do
+      before do
+        post '/v1/players', { irrelevant: 'value' }
+      end
+
+      it 'sends 400 status' do
+        expect(last_response.status).to eq 400
+      end
+
+      it 'sends error message' do
+        error_message = 'unexpected token'
+
+        expect(last_response.body).to include error_message
+      end
+    end
   end
 
   def database_find(player)
