@@ -4,6 +4,11 @@ class Administrator
   def initialize(players, validator)
     @players = players
     @validator = validator
+    @error_messages = {
+      bad_data: 'bad or incomplete data',
+      under_age: 'player is under 16 years old',
+      existing_player: 'player already registered'
+    }
   end
 
   def register_player(player)
@@ -18,13 +23,13 @@ class Administrator
   private
 
   def check_data(player)
-    raise 'bad or incomplete data' unless @validator.all_data_present?(player)
+    raise @error_messages[:bad_data] unless @validator.all_data_present?(player)
   end
 
   def check_age(player)
     birth_year = player[:birth_date]
 
-    raise 'player is under 16 years old' unless @validator.over_sixteen?(birth_year)
+    raise @error_messages[:under_age] unless @validator.over_sixteen?(birth_year)
   end
 
   def lower_casing(player)
@@ -34,6 +39,6 @@ class Administrator
   def check_existing_player(player)
     player_search = @players.find(player[:first_name], player[:last_name])
 
-    raise 'player already registered' unless player_search.empty?
+    raise @error_messages[:existing_player] unless player_search.empty?
   end
 end
