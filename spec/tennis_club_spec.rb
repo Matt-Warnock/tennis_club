@@ -8,6 +8,10 @@ RSpec.describe 'tennis_club' do
   end
 
   describe '/v1/players' do
+    before do
+      clear_test_database
+    end
+
     context 'when successful' do
       before { post '/v1/players', player.to_json }
 
