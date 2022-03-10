@@ -36,21 +36,21 @@ RSpec.describe Players do
       end
     end
 
-    context 'when data exceeds database constraints' do
-      it 'does not raise an error' do
+    context 'raises an error when' do
+      it 'name is too long' do
         one_hundred_chars_name = player
         one_hundred_chars_name[:first_name] = 'john ' * 20
 
-        expect { subject.create(one_hundred_chars_name) }.to_not raise_error
+        expect { subject.create(one_hundred_chars_name) }
+          .to raise_error PG::StringDataRightTruncation
       end
 
-      it 'logs an error' do
+      it 'date is in wrong format' do
         bad_date_format = player
-        bad_date_format[:birth_date] = 'january 1'
+        bad_date_format[:birth_date] = 'jan 1'
 
         expect { subject.create(bad_date_format) }
-          .to change { subject.error_message }
-          .from(nil).to(String)
+          .to raise_error PG::InvalidDatetimeFormat
       end
     end
   end

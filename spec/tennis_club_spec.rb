@@ -68,6 +68,25 @@ RSpec.describe 'tennis_club' do
         expect(last_response.body).to include error_message
       end
     end
+
+    context 'when database errors' do
+      before do
+        one_hundred_chars_name = player
+        one_hundred_chars_name[:first_name] = 'John ' * 20
+
+        post '/v1/players', one_hundred_chars_name.to_json
+      end
+
+      it 'sends 400 status' do
+        expect(last_response.status).to eq 400
+      end
+
+      it 'sends error message' do
+        error_message = 'value too long'
+
+        expect(last_response.body).to include error_message
+      end
+    end
   end
 
   def database_find(player)

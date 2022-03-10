@@ -3,19 +3,11 @@
 require 'database_connection'
 
 class Players
-  attr_reader :error_message
-
-  def initialize
-    @error_message = nil
-  end
-
   def create(player)
     DatabaseConnection.query(
       'INSERT INTO players(first_name, last_name, nationality, birth_date)
        VALUES($1, $2, $3, $4);', order_in_array(player)
     )
-  rescue PG::Error => e
-    @error_message = e.message
   end
 
   def find(first_name, last_name)
