@@ -53,6 +53,18 @@ RSpec.describe 'tennis_club' do
       end
     end
 
+    it 'finds existing player when adding player with capitalized name' do
+      capitalized_player = player
+      error_message = 'player already registered'
+
+      Players.new.create(player)
+      capitalized_player[:first_name] = 'John'
+
+      post '/v1/players', capitalized_player.to_json
+
+      expect(last_response.body).to include error_message
+    end
+
     context 'when invalid json request' do
       before do
         post '/v1/players', { irrelevant: 'value' }

@@ -26,6 +26,16 @@ RSpec.describe Administrator do
 
         administrator.register_player(good_data)
       end
+
+      it 'checks player name in lowercasing' do
+        capitalized_player_name = good_data
+        capitalized_player_name[:first_name] = 'John'
+        capitalized_player_name[:last_name] = 'Doe'
+
+        expect(players).to receive(:find).with(good_data[:first_name], good_data[:last_name])
+
+        administrator.register_player(capitalized_player_name)
+      end
     end
 
     context 'when data is incomplete' do

@@ -25,7 +25,10 @@ class Administrator
   end
 
   def check_existing_player(player)
-    player_search = @players.find(player[:first_name], player[:last_name])
+    first_name = player[:first_name].downcase
+    last_name = player[:last_name].downcase
+
+    player_search = @players.find(first_name, last_name)
 
     raise 'player already registered' unless player_search.empty?
   end
