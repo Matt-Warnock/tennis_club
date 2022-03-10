@@ -21,6 +21,12 @@ RSpec.describe Administrator do
         administrator.register_player(good_data)
       end
 
+      it 'calls players with data strings in lowercasing' do
+        expect(players).to receive(:create).with(good_data)
+
+        administrator.register_player(data_capitalized_strings)
+      end
+
       it 'checks if the player is already registered' do
         expect(players).to receive(:find).with(good_data[:first_name], good_data[:last_name])
 
@@ -28,13 +34,9 @@ RSpec.describe Administrator do
       end
 
       it 'checks player name in lowercasing' do
-        capitalized_player_name = good_data
-        capitalized_player_name[:first_name] = 'John'
-        capitalized_player_name[:last_name] = 'Doe'
-
         expect(players).to receive(:find).with(good_data[:first_name], good_data[:last_name])
 
-        administrator.register_player(capitalized_player_name)
+        administrator.register_player(data_capitalized_strings)
       end
     end
 
@@ -68,5 +70,9 @@ RSpec.describe Administrator do
       nationality: 'british',
       birth_date: '1990-01-01'
     }
+  end
+
+  def data_capitalized_strings
+    good_data.transform_values(&:capitalize)
   end
 end

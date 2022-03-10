@@ -7,15 +7,20 @@ class Administrator
 
   def register_player(player)
     check_data(player)
-    check_existing_player(player)
+    downcased_player = lower_casing(player)
 
-    @players.create(player)
+    check_existing_player(downcased_player)
+    @players.create(downcased_player)
   end
 
   private
 
   def check_data(player)
     raise 'bad or incomplete data' unless all_data_present?(player)
+  end
+
+  def lower_casing(player)
+    player.transform_values(&:downcase)
   end
 
   def all_data_present?(player)
@@ -25,10 +30,7 @@ class Administrator
   end
 
   def check_existing_player(player)
-    first_name = player[:first_name].downcase
-    last_name = player[:last_name].downcase
-
-    player_search = @players.find(first_name, last_name)
+    player_search = @players.find(player[:first_name], player[:last_name])
 
     raise 'player already registered' unless player_search.empty?
   end
