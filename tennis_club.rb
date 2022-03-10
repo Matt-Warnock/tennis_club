@@ -3,6 +3,7 @@
 require 'sinatra'
 require_relative './lib/players'
 require_relative './lib/administrator'
+require_relative './lib/validator'
 
 class TennisClub < Sinatra::Base
   before do
@@ -10,7 +11,7 @@ class TennisClub < Sinatra::Base
   end
 
   post '/v1/players' do
-    administrator = Administrator.new(Players.new)
+    administrator = Administrator.new(Players.new, Validator.new)
     data = JSON.parse(request.body.read, { symbolize_names: true })
 
     administrator.register_player(data)

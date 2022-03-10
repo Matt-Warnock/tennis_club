@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require 'administrator'
+require 'validator'
 
 RSpec.describe Administrator do
   describe '#register_player' do
     let(:players) { double('Players') }
-    let(:administrator) { described_class.new(players) }
+    let(:validator) { Validator.new }
+    let(:administrator) { described_class.new(players, validator) }
 
     before do
       allow(players).to receive(:create)
