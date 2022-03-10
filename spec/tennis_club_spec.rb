@@ -54,11 +54,10 @@ RSpec.describe 'tennis_club' do
     end
 
     it 'finds existing player when adding player with capitalized name' do
-      capitalized_player = player
+      capitalized_player = player.update({ first_name: 'John' })
       error_message = 'player already registered'
 
       Players.new.create(player)
-      capitalized_player[:first_name] = 'John'
 
       post '/v1/players', capitalized_player.to_json
 
@@ -83,10 +82,10 @@ RSpec.describe 'tennis_club' do
 
     context 'when database errors' do
       before do
-        one_hundred_chars_name = player
-        one_hundred_chars_name[:first_name] = 'John ' * 20
+        one_hundred_chars_name = 'John ' * 20
+        bad_data = player.update({ first_name: one_hundred_chars_name })
 
-        post '/v1/players', one_hundred_chars_name.to_json
+        post '/v1/players', bad_data.to_json
       end
 
       it 'sends 400 status' do
