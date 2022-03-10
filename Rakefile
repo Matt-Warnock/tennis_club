@@ -4,6 +4,7 @@ require 'pg'
 
 namespace :db do
   sql = File.open('./db/migrations/create_tables.sql').read
+  players = File.open('./db/migrations/insert_test_players.sql').read
 
   task :local_setup do
     puts 'Creating databases...'
@@ -17,5 +18,11 @@ namespace :db do
 
       connection.exec(sql)
     end
+  end
+
+  task :seed_players do
+    puts 'Inserting players...'
+    connection = PG.connect(dbname: 'tennis_club_test')
+    connection.exec(players)
   end
 end
