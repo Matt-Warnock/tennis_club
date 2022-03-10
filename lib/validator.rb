@@ -6,4 +6,9 @@ class Validator
 
     required_keys.all? { |key| player.key?(key) }
   end
+
+  def over_sixteen?(birth_date)
+    birth_date_year = birth_date[0, 4].to_i
+    (Time.now.year - birth_date_year) >= 16
+  end
 end

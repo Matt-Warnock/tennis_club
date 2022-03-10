@@ -63,6 +63,11 @@ RSpec.describe Administrator do
           .to raise_error 'player already registered'
       end
     end
+
+    it 'raises error when player is under 16 years old' do
+      expect { administrator.register_player(under_age_player) }
+        .to raise_error 'player is under 16 years old'
+    end
   end
 
   def good_data
@@ -72,6 +77,11 @@ RSpec.describe Administrator do
       nationality: 'british',
       birth_date: '1990-01-01'
     }
+  end
+
+  def under_age_player
+    fifteen_years_ago = Time.now.year - 15
+    good_data.update({ birth_date: "#{fifteen_years_ago}-01-01" })
   end
 
   def data_capitalized_strings
