@@ -4,5 +4,6 @@ CREATE TABLE players(
   last_name VARCHAR(50) NOT NULL,
   nationality VARCHAR(20) NOT NULL,
   birth_date DATE NOT NULL,
-  score INTEGER DEFAULT 1200
+  score INTEGER DEFAULT 1200,
+  games_played INTEGER DEFAULT 0
   );

@@ -5,6 +5,10 @@ require 'players'
 RSpec.describe Players do
   let(:connection) { PG.connect(dbname: 'tennis_club_test') }
 
+  before do
+    clear_test_database
+  end
+
   describe '#create' do
     context 'when adding a new player to the database' do
       before do
