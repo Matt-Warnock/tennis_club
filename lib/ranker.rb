@@ -7,7 +7,9 @@ class Ranker
   end
 
   def assign_ranks(players)
-    rank_each_player(players)
+    ranked_players = rank_each_player(players)
+
+    ranked_players.sort_by { |p| p['score'].to_i }.reverse
   end
 
   private

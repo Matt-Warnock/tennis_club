@@ -12,40 +12,44 @@ RSpec.describe Ranker do
   end
 
   describe '#assign_ranks' do
-    it 'gives silver rank to player with score in range 3000...4999' do
-      ranked_players = subject.assign_ranks(all_database_players)
-      range = (3000...49_999)
+    context 'when player has played enough games' do
+      let(:players) { over_three_games }
 
-      silver_player = select_by_score_range(ranked_players, range).first
+      it 'gives silver rank when score in range 3000...4999' do
+        ranked_players = subject.assign_ranks(players)
+        range = (3000...4999)
 
-      expect(silver_player['rank']).to eq 'silver'
-    end
+        silver_player = select_by_score_range(ranked_players, range).first
 
-    it 'gives bronze rank to player with score in range 0...2999' do
-      ranked_players = subject.assign_ranks(all_database_players)
-      range = (0...2999)
+        expect(silver_player['rank']).to eq 'silver'
+      end
 
-      bronze_player = select_by_score_range(ranked_players, range).first
+      it 'gives bronze rank when score in range 0...2999' do
+        ranked_players = subject.assign_ranks(players)
+        range = (0...2999)
 
-      expect(bronze_player['rank']).to eq 'bronze'
-    end
+        bronze_player = select_by_score_range(ranked_players, range).first
 
-    it 'gives gold rank to player with score in range 5000...9999' do
-      ranked_players = subject.assign_ranks(all_database_players)
-      range = (5000...9999)
+        expect(bronze_player['rank']).to eq 'bronze'
+      end
 
-      gold_player = select_by_score_range(ranked_players, range).first
+      it 'gives gold rank when score in range 5000...9999' do
+        ranked_players = subject.assign_ranks(players)
+        range = (5000...9999)
 
-      expect(gold_player['rank']).to eq 'gold'
-    end
+        gold_player = select_by_score_range(ranked_players, range).first
 
-    it 'gives supersonic_legend rank to player with score in range 10000 up' do
-      ranked_players = subject.assign_ranks(all_database_players)
-      range = (10_000...)
+        expect(gold_player['rank']).to eq 'gold'
+      end
 
-      supersonic_player = select_by_score_range(ranked_players, range).first
+      it 'gives supersonic_legend rank when score in range 10000 up' do
+        ranked_players = subject.assign_ranks(players)
+        range = (10_000...)
 
-      expect(supersonic_player['rank']).to eq 'supersonic legend'
+        supersonic_player = select_by_score_range(ranked_players, range).first
+
+        expect(supersonic_player['rank']).to eq 'supersonic legend'
+      end
     end
 
     it 'gives rank of "unranked" to all that has played under 3 games' do
@@ -56,6 +60,26 @@ RSpec.describe Ranker do
 
       expect(result).to eq true
     end
+
+    it 'orders players in score order' do
+      ranked_players = subject.assign_ranks(all_database_players)
+
+      top_three_scores = ranked_players.map { |player| player['score'] }[0, 3]
+
+      expect(top_three_scores).to eq %w[30000 9090 4000]
+    end
+
+    xit 'orders unranked players after ranked in score order' do
+      ranked_players = subject.assign_ranks(all_database_players)
+
+      bottem_three_scores = ranked_players.map { |player| player['score'] }[-3, 3]
+
+      expect(bottem_three_scores).to eq %w[9090 875 1452]
+    end
+  end
+
+  def over_three_games
+    all_database_players.filter { |p| p['games_played'].to_i >= 3 }
   end
 
   def select_by_score_range(players, range)
